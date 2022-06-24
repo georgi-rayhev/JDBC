@@ -6,24 +6,21 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private  static DatabaseConnection instance;
-    private Connection connection;
+    private static DatabaseConnection instance;
+    private Connection connection = null;
     private PropertiesHelper propertiesHelper;
 
-    private DatabaseConnection() throws IOException {
-        propertiesHelper = PropertiesHelper.getInstance();
+
+    public Connection getConnection(){
         try {
-                connection = DriverManager.getConnection(
+            propertiesHelper = PropertiesHelper.getInstance();
+            connection = DriverManager.getConnection(
                     propertiesHelper.getUrl(),
                     propertiesHelper.getUser(),
                     propertiesHelper.getPassword());
-
-        } catch (SQLException exception) {
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
-    }
-
-    public Connection getConnection(){
         return connection;
     }
 

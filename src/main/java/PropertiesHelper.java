@@ -24,7 +24,7 @@ public class PropertiesHelper {
         FileReader fileReader = new FileReader(configPath);
         this.properties.load(fileReader);
         this.url = this.properties.getProperty("url");
-        this.user = this.properties.getProperty("username");
+        this.user = this.properties.getProperty("user");
         this.password = this.properties.getProperty("password");
     }
 
