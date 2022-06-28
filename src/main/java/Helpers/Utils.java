@@ -12,12 +12,14 @@ import java.util.Locale;
 
 
 public class Utils {
+
+    private static int id = 555;
     public static Customers createCustomerWithFakeData() {
         Faker faker = new Faker();
         FakeValuesService fakeValuesService = new FakeValuesService(
                 new Locale("en-GB"), new RandomService());
         Customers customer = Customers.builder()
-                .id(faker.number().randomDigit())
+                .id(faker.number().numberBetween(15,15))
                 .profile_name(faker.name().firstName())
                 .email(faker.bothify("????##@gmail.com"))
                 .phone(faker.numerify("##########"))
