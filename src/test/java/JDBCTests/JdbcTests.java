@@ -1,6 +1,7 @@
 package JDBCTests;
 
 import DbConnection.DatabaseConnection;
+import Helpers.Utils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConnectionTests {
+public class JdbcTests {
 
      DatabaseConnection databaseConnection = null;
      Statement statement = null;
@@ -40,6 +41,16 @@ public class ConnectionTests {
                Assertions.assertEquals(name , searchedName);
           }
           System.out.println(names);
+     }
+
+     @Test
+     public void createCustomerWithFakeData() throws Exception{
+          Utils.createCustomerWithFakeData();
+     }
+
+     @Test
+     public void createListOfCustomers(){
+          Utils.createListOfCustomers();
      }
 
      @AfterEach
