@@ -27,7 +27,7 @@ public class Utils {
                 .Gdpr_consent(faker.random().nextBoolean())
                 .Is_customer_profile_active(faker.random().nextBoolean())
                 .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
-                .Profile_deactivated_at(Timestamp.valueOf(LocalDateTime.now()))
+                .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
                 .reason_for_deactivation("No reason")
                 .notes("Some text")
                 .build();
@@ -50,7 +50,7 @@ public class Utils {
                     .Gdpr_consent(faker.random().nextBoolean())
                     .Is_customer_profile_active(faker.random().nextBoolean())
                     .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
-                    .Profile_deactivated_at(Timestamp.valueOf(LocalDateTime.now()))
+                    .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
                     .reason_for_deactivation("No reason")
                     .notes("Some text")
                     .build());

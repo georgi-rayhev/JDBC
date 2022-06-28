@@ -1,5 +1,6 @@
 package JDBCTests;
 
+import DAO.CustomerDao;
 import DbConnection.DatabaseConnection;
 import Helpers.Utils;
 import org.junit.jupiter.api.AfterEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +26,11 @@ public class JdbcTests {
      private String query = "SELECT * FROM customers where profile_name = '%s'";
      private String searchingFakeUserQuery = "SELECT * FROM customers where id = 15";
 
-     //remove query from setUp , move it to checkForCurrentName
-     //add assertions for new tests
+     CustomerDao customerDao = new CustomerDao();
+
+     public JdbcTests() throws SQLException, IOException {
+     }
+
      @BeforeEach
      public void setUp(){
           try  {
@@ -39,6 +44,16 @@ public class JdbcTests {
                System.out.println(exception.getMessage());
           }
           }
+
+     @AfterEach
+     public void closeConnection() {
+          try {
+               statement.close();
+               resultSet.close();
+          } catch (Exception e) {
+               e.printStackTrace();
+          }
+     }
 
 
      @Test
@@ -74,13 +89,8 @@ public class JdbcTests {
           }
      }
 
-     @AfterEach
-     public void closeConnection() {
-          try {
-               statement.close();
-               resultSet.close();
-          } catch (Exception e) {
-               e.printStackTrace();
-          }
+     @Test
+     public void testSaveCrudOperation(){
+          customerDao.getRandomId();
      }
 }

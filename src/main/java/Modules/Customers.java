@@ -32,8 +32,8 @@ public class Customers {
     boolean Is_customer_profile_active;
     @Column(name="Profile_created_at")
     Timestamp Profile_created_at;
-    @Column(name="Profile_deactivated_at")
-    Timestamp Profile_deactivated_at;
+    @Column(name="Profile_deactivated")
+    Timestamp Profile_deactivated;
     @Column(name="reason_for_deactivation")
     String reason_for_deactivation;
     @Column(name="Notes")
