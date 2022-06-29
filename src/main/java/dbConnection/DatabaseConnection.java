@@ -1,6 +1,6 @@
-package DbConnection;
+package dbConnection;
 
-import Helpers.PropertiesHelper;
+import helpers.PropertiesHelper;
 
 import java.io.IOException;
 import java.sql.Connection;

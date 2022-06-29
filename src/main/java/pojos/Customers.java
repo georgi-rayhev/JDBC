@@ -1,4 +1,4 @@
-package Pojos;
+package pojos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,4 +38,6 @@ public class Customers {
     String reason_for_deactivation;
     @Column(name="Notes")
     String notes;
+    @Column(name ="Address_id")
+    int address_id;
 }

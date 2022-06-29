@@ -1,6 +1,6 @@
-package Helpers;
+package helpers;
 
-import Pojos.Customers;
+import pojos.Customers;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;

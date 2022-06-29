@@ -1,8 +1,8 @@
-package JDBCTests;
+package jdbcTests;
 
-import DAO.CustomerDao;
-import DbConnection.DatabaseConnection;
-import Helpers.Utils;
+import dao.CustomerDao;
+import dbConnection.DatabaseConnection;
+import helpers.Utils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,10 +95,10 @@ public class JdbcTests {
 
      @Test
      public void testDeleteById() {
-          customerDao.deleteById(11);
+          customerDao.deleteById(1);
           try {
                statement = connection.createStatement();
-               resultSet = statement.executeQuery("Select * from Customers where id = 11");
+               resultSet = statement.executeQuery("Select * from Customers where id = 1");
                Assertions.assertNull(resultSet);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());

@@ -1,6 +1,6 @@
-package Main;
+package main;
 
-import DbConnection.DatabaseConnection;
+import dbConnection.DatabaseConnection;
 
 import java.sql.*;
 

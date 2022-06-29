@@ -1,7 +1,7 @@
-package DAO;
+package dao;
 
-import DbConnection.DatabaseConnection;
-import Pojos.Customers;
+import dbConnection.DatabaseConnection;
+import pojos.Customers;
 
 import java.io.IOException;
 import java.sql.*;
@@ -39,7 +39,7 @@ public class CustomerDao implements DAO<Customers> {
             preparedStatement.setTimestamp(8, customer.getProfile_deactivated());
             preparedStatement.setString(9, customer.getReason_for_deactivation());
             preparedStatement.setString(10, customer.getNotes());
-            preparedStatement.setInt(11,2);
+            preparedStatement.setInt(11,customer.getAddress_id());
             preparedStatement.executeUpdate();
            System.out.println("Customer is saved successfully");
         } catch (Exception exception) {
