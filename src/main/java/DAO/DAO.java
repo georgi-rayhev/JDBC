@@ -32,16 +32,16 @@ public interface DAO<T> {
 
     /**
      * This method return list of random id's
-     * @param randomId
+     * @param
      */
 
-//    List<T> getRandomIds(int randomId);
-//
-//    /**
-//     * This method return the count of all records is the table
-//     */
-//
-//    int getRecordsCount();
+    List<Integer> getRandomIds(int randomCount);
+
+    /**
+     * This method return the count of all records is the table
+     */
+
+    int getRecordsCount();
 
     /**
      * This method extract a single object from database by id

@@ -1,6 +1,6 @@
 package Helpers;
 
-import Modules.Customers;
+import Pojos.Customers;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
@@ -12,14 +12,12 @@ import java.util.Locale;
 
 
 public class Utils {
-
-    private static int id = 555;
     public static Customers createCustomerWithFakeData() {
         Faker faker = new Faker();
         FakeValuesService fakeValuesService = new FakeValuesService(
                 new Locale("en-GB"), new RandomService());
         Customers customer = Customers.builder()
-                .id(faker.number().numberBetween(15,15))
+                .id(faker.number().numberBetween(30,30))
                 .profile_name(faker.name().firstName())
                 .email(faker.bothify("????##@gmail.com"))
                 .phone(faker.numerify("##########"))

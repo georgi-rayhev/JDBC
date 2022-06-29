@@ -79,18 +79,58 @@ public class JdbcTests {
 
      @Test
      public void createListOfCustomers() {
-          Utils.createListOfCustomers();
+          Assertions.assertNotNull(Utils.createListOfCustomers());
+     }
+
+     @Test
+     public void testSaveCrudOperation(){
+          customerDao.save(Utils.createCustomerWithFakeData());
           try {
                statement = connection.createStatement();
-               resultSet = statement.executeQuery(String.format(searchingFakeUserQuery));
-               Assertions.assertNotNull(resultSet);
+               resultSet = statement.executeQuery("Select * from Customers where id = 30");
+               Assertions.assertNull(resultSet);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
      }
 
      @Test
-     public void testSaveCrudOperation(){
-          customerDao.getRandomId();
+     public void testDeleteById() {
+          customerDao.deleteById(11);
+          try {
+               statement = connection.createStatement();
+               resultSet = statement.executeQuery("Select * from Customers where id = 11");
+               Assertions.assertNull(resultSet);
+          } catch (Exception exception) {
+               System.out.println(exception.getMessage());
+          }
+     }
+
+     //execute this tests at the END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     @Test
+     public void testDeleteAll() {
+          customerDao.deleteAll();
+               try {
+                    statement = connection.createStatement();
+                    resultSet = statement.executeQuery("Select * from customers");
+                    Assertions.assertNull(resultSet);
+               } catch (Exception exception) {
+                    System.out.println(exception.getMessage());
+               }
+     }
+
+     @Test
+     public void testGetRandomId() {
+          Assertions.assertNotNull(customerDao.getRandomId());
+     }
+
+     @Test
+     public void createListWithRandomIds () {
+          Assertions.assertNotNull(customerDao.getRandomIds(8));
+     }
+
+     @Test
+     public void getCountOfCustomerIds() {
+          Assertions.assertNotNull(customerDao.getRecordsCount());
      }
 }

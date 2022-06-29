@@ -1,10 +1,12 @@
 package DAO;
 
 import DbConnection.DatabaseConnection;
-import Modules.Customers;
+import Pojos.Customers;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,14 +20,14 @@ public class CustomerDao implements DAO<Customers> {
     private PreparedStatement preparedStatement;
 
 
-    public CustomerDao () throws SQLException, IOException {
+    public CustomerDao() throws SQLException, IOException {
         connection = DatabaseConnection.getInstance().getConnection();
     }
 
     @Override
-    public void save (Customers customer) {
+    public void save(Customers customer) {
         try {
-            preparedStatement = connection.prepareStatement("Insert into customers \n" +
+            preparedStatement = connection.prepareStatement("INSERT INTO CUSTOMERS \n" +
                     "id," +
                     "profile_name," +
                     "email," +
@@ -39,18 +41,18 @@ public class CustomerDao implements DAO<Customers> {
                     "notes) \n" +
                     "VALUES \n" +
                     "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    preparedStatement.setInt(1, customer.getId());
-                    preparedStatement.setString(2,customer.getProfile_name());
-                    preparedStatement.setString(3, customer.getEmail());
-                    preparedStatement.setString(4,customer.getPhone());
-                    preparedStatement.setInt(5,customer.getAge());
-                    preparedStatement.setBoolean(6, customer.isGdpr_consent());
-                    preparedStatement.setBoolean(7, customer.isIs_customer_profile_active());
-                    preparedStatement.setTimestamp(8,customer.getProfile_created_at());
-                    preparedStatement.setTimestamp(9, customer.getProfile_deactivated());
-                    preparedStatement.setString(10, customer.getReason_for_deactivation());
-                    preparedStatement.setString(11, customer.getNotes());
-                    preparedStatement.executeUpdate();
+            preparedStatement.setInt(1, customer.getId());
+            preparedStatement.setString(2, customer.getProfile_name());
+            preparedStatement.setString(3, customer.getEmail());
+            preparedStatement.setString(4, customer.getPhone());
+            preparedStatement.setInt(5, customer.getAge());
+            preparedStatement.setBoolean(6, customer.isGdpr_consent());
+            preparedStatement.setBoolean(7, customer.isIs_customer_profile_active());
+            preparedStatement.setTimestamp(8, customer.getProfile_created_at());
+            preparedStatement.setTimestamp(9, customer.getProfile_deactivated());
+            preparedStatement.setString(10, customer.getReason_for_deactivation());
+            preparedStatement.setString(11, customer.getNotes());
+            preparedStatement.executeUpdate();
             System.out.println("Customer is saved successfully");
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -70,21 +72,19 @@ public class CustomerDao implements DAO<Customers> {
     }
 
 
-
     @Override
     public void deleteAll() {
-            try {
-                preparedStatement = connection.prepareStatement("Delete from CUSTOMERS");
-                preparedStatement.executeUpdate();
-                System.out.println("All records from Customers table are deleted");
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+        try {
+            preparedStatement = connection.prepareStatement("Delete from CUSTOMERS");
+            preparedStatement.executeUpdate();
+            System.out.println("All records from Customers table are deleted");
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
+    }
 
 
-
-@   Override
+    @Override
     public Customers getRandomId() {
         Customers randomCustomer = null;
         try {
@@ -114,17 +114,38 @@ public class CustomerDao implements DAO<Customers> {
     }
 
 
-//    @Override
-//    public  List<Customers> getRandomIds(int randomId) {
-//
-//    }
-//
-//
-//@   Override
-//    int getRecordsCount() {
-//
-//}
+    @Override
+    public List<Integer> getRandomIds(int randomCount) {
+        List<Integer> randomCustomersIds = new ArrayList<>();
+        try {
+            preparedStatement = connection.prepareStatement("Select * from Customers ORDER BY random() limit ?");
+            preparedStatement.setInt(1, randomCount);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                randomCustomersIds.add(resultSet.getInt("id"));
+            }
+            System.out.println(randomCustomersIds);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+        return randomCustomersIds;
+    }
 
 
 
+    @Override
+    public int getRecordsCount() {
+        int idRecords = 0;
+        try {
+            preparedStatement = connection.prepareStatement("Select COUNT (id) from Customers ");
+            resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    idRecords = resultSet.getInt(1);
+                    System.out.printf("Customers Id's count is : %d%n", idRecords);
+                }
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
+    return idRecords;
+}
 }
