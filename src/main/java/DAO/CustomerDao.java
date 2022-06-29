@@ -27,33 +27,21 @@ public class CustomerDao implements DAO<Customers> {
     @Override
     public void save(Customers customer) {
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO CUSTOMERS \n" +
-                    "id," +
-                    "profile_name," +
-                    "email," +
-                    "phone," +
-                    "age," +
-                    "gdpr_consent," +
-                    "is_customer_profile_active," +
-                    "profile_created_at," +
-                    "profile_deactivated_at," +
-                    "reason_for_deactivation," +
-                    "notes) \n" +
-                    "VALUES \n" +
-                    "(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, customer.getId());
-            preparedStatement.setString(2, customer.getProfile_name());
-            preparedStatement.setString(3, customer.getEmail());
-            preparedStatement.setString(4, customer.getPhone());
-            preparedStatement.setInt(5, customer.getAge());
-            preparedStatement.setBoolean(6, customer.isGdpr_consent());
-            preparedStatement.setBoolean(7, customer.isIs_customer_profile_active());
-            preparedStatement.setTimestamp(8, customer.getProfile_created_at());
-            preparedStatement.setTimestamp(9, customer.getProfile_deactivated());
-            preparedStatement.setString(10, customer.getReason_for_deactivation());
-            preparedStatement.setString(11, customer.getNotes());
+            preparedStatement = connection.prepareStatement("INSERT INTO CUSTOMERS  (profile_name, email, phone, age, gdpr_consent,  is_customer_profile_active, profile_created_at,profile_deactivated, reason_for_deactivation, notes, address_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+         //   preparedStatement.setInt(1, customer.getId());
+            preparedStatement.setString(1, customer.getProfile_name());
+            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(3, customer.getPhone());
+            preparedStatement.setInt(4, customer.getAge());
+            preparedStatement.setBoolean(5, customer.isGdpr_consent());
+            preparedStatement.setBoolean(6, customer.isIs_customer_profile_active());
+            preparedStatement.setTimestamp(7, customer.getProfile_created_at());
+            preparedStatement.setTimestamp(8, customer.getProfile_deactivated());
+            preparedStatement.setString(9, customer.getReason_for_deactivation());
+            preparedStatement.setString(10, customer.getNotes());
+            preparedStatement.setInt(11,2);
             preparedStatement.executeUpdate();
-            System.out.println("Customer is saved successfully");
+           System.out.println("Customer is saved successfully");
         } catch (Exception exception) {
             exception.printStackTrace();
         }

@@ -76,7 +76,6 @@ public class JdbcTests {
           }
      }
 
-
      @Test
      public void createListOfCustomers() {
           Assertions.assertNotNull(Utils.createListOfCustomers());
@@ -88,7 +87,7 @@ public class JdbcTests {
           try {
                statement = connection.createStatement();
                resultSet = statement.executeQuery("Select * from Customers where id = 30");
-               Assertions.assertNull(resultSet);
+               Assertions.assertNotNull(resultSet);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
