@@ -48,11 +48,11 @@ public interface DAO<T> {
      * @return
      */
 
-//    T getByID(int id);
-//
-//    /**
-//     * This method extract a list of objects from the database by a List of Id's
-//     */
-//
-//    List<T> getByIDs(List<Integer> ids);
+    T getById(int id);
+
+    /**
+     * This method extract a list of objects from the database by a List of Id's
+     */
+
+    List<T> getByIds(List<Integer> ids);
 }

@@ -28,7 +28,6 @@ public class CustomerDao implements DAO<Customers> {
     public void save(Customers customer) {
         try {
             preparedStatement = connection.prepareStatement("INSERT INTO CUSTOMERS  (profile_name, email, phone, age, gdpr_consent,  is_customer_profile_active, profile_created_at,profile_deactivated, reason_for_deactivation, notes, address_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-         //   preparedStatement.setInt(1, customer.getId());
             preparedStatement.setString(1, customer.getProfile_name());
             preparedStatement.setString(2, customer.getEmail());
             preparedStatement.setString(3, customer.getPhone());
@@ -135,5 +134,67 @@ public class CustomerDao implements DAO<Customers> {
             System.out.println(exception.getMessage());
         }
     return idRecords;
+}
+
+    @Override
+    public Customers getById(int id) {
+        Customers customer = null;
+            try {
+                preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
+                preparedStatement.setInt(1,id);
+                resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        customer = Customers.builder()
+                            .id(resultSet.getInt("id"))
+                            .profile_name(resultSet.getString("profile_name"))
+                            .email(resultSet.getString("email"))
+                            .phone(resultSet.getString("phone"))
+                            .age(resultSet.getInt("age"))
+                            .Gdpr_consent(resultSet.getBoolean("gdpr_consent"))
+                            .Is_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"))
+                            .Profile_created_at(resultSet.getTimestamp("Profile_created_at"))
+                            .Profile_deactivated(resultSet.getTimestamp("Profile_deactivated"))
+                            .reason_for_deactivation(resultSet.getString("reason_for_deactivation"))
+                            .notes(resultSet.getString("notes"))
+                            .address_id(resultSet.getInt("address_id"))
+                            .build();
+                        }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                    System.out.println(customer);
+                    return customer;
+            }
+
+    @Override
+    public List<Customers> getByIds(List<Integer> ids) {
+        List<Customers> customers = new ArrayList<>();
+            try {
+                preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
+                for(int i = 0; i < ids.size(); i++) {
+                    preparedStatement.setInt(1, ids.get(i));
+                    resultSet = preparedStatement.executeQuery();
+                    while (resultSet.next()) {
+                        Customers customer = new Customers();
+                        customer.setId(resultSet.getInt("id"));
+                        customer.setProfile_name(resultSet.getString("Profile_name"));
+                        customer.setEmail(resultSet.getString("email"));
+                        customer.setPhone(resultSet.getString("phone"));
+                        customer.setAge(resultSet.getInt("age"));
+                        customer.setGdpr_consent(resultSet.getBoolean("gdpr_consent"));
+                        customer.setIs_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"));
+                        customer.setProfile_created_at(resultSet.getTimestamp("Profile_created_at"));
+                        customer.setProfile_deactivated(resultSet.getTimestamp("Profile_deactivated"));
+                        customer.setReason_for_deactivation(resultSet.getString("reason_for_deactivation"));
+                        customer.setNotes(resultSet.getString("notes"));
+                        customer.setAddress_id(resultSet.getInt("address_id"));
+                        customers.add(customer);
+                    }
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            System.out.println(customers);
+            return customers;
 }
 }

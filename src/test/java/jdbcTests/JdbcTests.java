@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pojos.Customers;
 
 import java.io.IOException;
 import java.sql.*;
@@ -131,5 +132,23 @@ public class JdbcTests {
      @Test
      public void getCountOfCustomerIds() {
           Assertions.assertNotNull(customerDao.getRecordsCount());
+     }
+
+     @Test
+     public void getByIdTest() {
+          Assertions.assertNotNull(customerDao.getById(2));
+     }
+
+     @Test
+     public void getByIdsTest() {
+          List<Integer> ids = new ArrayList<>();
+          ids.add(4);
+          ids.add(5);
+          List <Customers> customers  = customerDao.getByIds(ids);
+          for (Customers customer : customers) {
+               Assertions.assertEquals(customers.size(),ids.size());
+               Assertions.assertNotNull(customers.get(0).getProfile_name());
+               Assertions.assertNotNull(customers.get(1).getProfile_name());
+          }
      }
 }
