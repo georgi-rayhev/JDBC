@@ -163,7 +163,30 @@ public class JdbcTests {
           List<Integer> ids = new ArrayList<>();
           ids.add(4);
           ids.add(5);
-          customerDao.getByIdsWithResultSetMapper(ids);
+          List<Customers> customers = customerDao.getByIds(ids);
+          for (Customers customer : customers) {
+               Assertions.assertEquals(customers.size(), ids.size());
+               Assertions.assertNotNull(customers.get(0).getProfile_name());
+               Assertions.assertNotNull(customers.get(1).getProfile_name());
+          }
+     }
+
+     @Test
+     public void testDbUtilsGetById() {
+          Assert.assertNotNull(customerDao.getByIdWithApacheDbUtils(2).get(0).getProfile_name());
+}
+
+     @Test
+     public void testDbUtilsGetByIds() {
+          List<Integer> ids = new ArrayList<>();
+          ids.add(4);
+          ids.add(5);
+          List<Customers> customers = customerDao.getByIdsWithApacheDbUtils(ids);
+               for (Customers customer : customers) {
+                    Assertions.assertEquals(customers.size(), ids.size());
+                    Assertions.assertNotNull(customers.get(0).getProfile_name());
+                    Assertions.assertNotNull(customers.get(1).getProfile_name());
+          }
 }
      }
 

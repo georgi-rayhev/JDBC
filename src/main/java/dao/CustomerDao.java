@@ -2,8 +2,12 @@ package dao;
 
 import dbConnection.DatabaseConnection;
 import helpers.ResultSetMapper;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import pojos.Customers;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,6 +24,7 @@ public class CustomerDao implements DAO<Customers> {
     private Connection connection;
     private ResultSet resultSet;
     private PreparedStatement preparedStatement;
+    private DatabaseConnection databaseConnection = new DatabaseConnection();
 
 
     public CustomerDao() throws SQLException, IOException {
@@ -236,4 +241,37 @@ public class CustomerDao implements DAO<Customers> {
         }
         return searchedCustomers;
     }
+
+    public List <Customers> getByIdWithApacheDbUtils(int id) {
+        List<Customers> customersList = new ArrayList<>();
+        try {
+            ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
+            QueryRunner runner = new QueryRunner();
+            customersList = runner.query(databaseConnection.getConnection(), String.format("Select * from Customers Where id = %s", id), resultSetHandler);
+            System.out.println("Searched customer is:" + customersList);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return customersList;
+    }
+
+    public List <Customers> getByIdsWithApacheDbUtils (List<Integer> ids) {
+        List<Customers> customersList = new ArrayList<>();
+        try {
+            ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
+            QueryRunner runner = new QueryRunner();
+            Array idsArray = connection.createArrayOf("int", ids.toArray());
+            customersList = runner.query(databaseConnection.getConnection(), "Select * from Customers Where id = any(?)",idsArray,resultSetHandler);
+            System.out.println("Searched customers are:");
+            for(Customers customer : customersList) {
+                System.out.println(customer);
+            }
+    } catch (Exception exception) {
+        exception.printStackTrace();
+    }
+        return customersList;
 }
+}
+
+
+
