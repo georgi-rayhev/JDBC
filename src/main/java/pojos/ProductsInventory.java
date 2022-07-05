@@ -14,7 +14,7 @@ import javax.persistence.Entity;
 @AllArgsConstructor
 @Entity
 @NoArgsConstructor
-public class ProductInventory {
+public class ProductsInventory {
 
     @Column(name = "id")
     int id;

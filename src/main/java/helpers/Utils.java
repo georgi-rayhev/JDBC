@@ -1,5 +1,6 @@
 package helpers;
 
+import pojos.CustomerAddresses;
 import pojos.Customers;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
@@ -56,4 +57,22 @@ public class Utils {
         System.out.println(customers);
           return customers;
     }
+
+    public static CustomerAddresses createCustomerAddressWithFakeData() {
+        Faker faker = new Faker();
+        FakeValuesService fakeValuesService = new FakeValuesService(
+                new Locale("en-GB"), new RandomService());
+        CustomerAddresses customerAddresses = CustomerAddresses.builder()
+                .address_id(faker.number().numberBetween(30,30))
+                        .address(faker.address().streetAddress())
+                                .city(faker.address().city())
+                                        .province(faker.bothify("no province"))
+                                                .state(faker.address().state())
+                                                        .postal_code(faker.random().nextInt(1000))
+                                                                .country(faker.address().country())
+                                                                        .build();
+        System.out.println(customerAddresses);
+        return customerAddresses;
+    }
+
 }

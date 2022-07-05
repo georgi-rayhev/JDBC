@@ -1,4 +1,8 @@
 package dao;
 
-public class OrdersDao {
-}
+import pojos.Orders;
+
+//public class OrdersDao implements DAO<Orders>{
+
+
+//}

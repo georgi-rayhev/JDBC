@@ -1,5 +1,6 @@
 package jdbcTests;
 
+import dao.CustomerAddressesDao;
 import dao.CustomerDao;
 import dbConnection.DatabaseConnection;
 import helpers.Utils;
@@ -29,6 +30,7 @@ public class JdbcTests {
      private String searchingFakeUserQuery = "SELECT * FROM customers where id = 15";
 
      CustomerDao customerDao = new CustomerDao();
+     CustomerAddressesDao customerAddressesDao = new CustomerAddressesDao();
 
      public JdbcTests() throws SQLException, IOException {
      }
@@ -97,10 +99,10 @@ public class JdbcTests {
 
      @Test
      public void testDeleteById() {
-          customerDao.deleteById(1);
+          customerDao.deleteById(35);
           try {
                statement = connection.createStatement();
-               resultSet = statement.executeQuery("Select * from Customers where id = 1");
+               resultSet = statement.executeQuery("Select * from Customers where id = 35");
                Assertions.assertNull(resultSet);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
