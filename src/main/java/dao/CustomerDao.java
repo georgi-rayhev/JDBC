@@ -1,12 +1,14 @@
 package dao;
 
 import dbConnection.DatabaseConnection;
+import helpers.ResultSetMapper;
 import pojos.Customers;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -197,4 +199,41 @@ public class CustomerDao implements DAO<Customers> {
             System.out.println(customers);
             return customers;
 }
+
+    public List <Customers> getByIdWithResultSetMapper(int id) {
+        ResultSetMapper resultSetMapper = new ResultSetMapper();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE id = ?");
+            preparedStatement.setInt( 1, id);
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        List<Customers> searchedCustomers = resultSetMapper.mapResultSetToObject(resultSet, Customers.class);
+        System.out.println("Searched customer is:" + searchedCustomers);
+
+        return searchedCustomers;
+    }
+
+    public List<Customers> getByIdsWithResultSetMapper(List<Integer> ids) {
+        ResultSetMapper resultSetMapper = new ResultSetMapper();
+        try {
+            preparedStatement = connection.prepareStatement
+                    (String.format("SELECT * FROM customers WHERE id IN (%s)",
+                            ids.stream().map(id -> "?").collect(Collectors.joining(", "))));
+
+            for (int i = 0; i < ids.size(); i++) {
+                preparedStatement.setInt(i + 1, ids.get(i));
+            }
+            resultSet = preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        List<Customers> searchedCustomers = resultSetMapper.mapResultSetToObject(resultSet, Customers.class);
+        System.out.println("Searched customers are:");
+        for(Customers customer : searchedCustomers) {
+            System.out.println(customer);
+        }
+        return searchedCustomers;
+    }
 }
