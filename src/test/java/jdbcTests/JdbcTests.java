@@ -4,7 +4,6 @@ import dao.CustomerAddressesDao;
 import dao.CustomerDao;
 import dbConnection.DatabaseConnection;
 import helpers.Utils;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -198,9 +197,19 @@ public class JdbcTests {
           }
 }
 
-@Test
-     public void testss(){
-          customerDao.getCustomerAddresses();
+     @Test
+     public void getCustomerAddressById(){
+          Assertions.assertNotNull(customerDao.getCustomerAddressByIdWithDbUtils(4));
 }
+
+     @Test
+     public void getCustomerOrdersById() {
+          customerDao.getCustomerOrdersByIdWithDbUtils(6);
+     }
+
+     @Test
+     public void getAllFieldsAtOnce() {
+          customerDao.getAllFieldsAtOnce(6);
+     }
      }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.sql.Array;
 import java.sql.Timestamp;
 
 @Builder
@@ -40,4 +41,8 @@ public class Customers {
     String notes;
     @Column(name ="Address_id")
     int address_id;
+    @Column(name = "customerAddress")
+    Array customerAddress;
+    @Column(name = "customerOrders")
+    Array customerOrders;
 }
