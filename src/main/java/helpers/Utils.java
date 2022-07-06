@@ -5,6 +5,9 @@ import pojos.Customers;
 import com.github.javafaker.Faker;
 import com.github.javafaker.service.FakeValuesService;
 import com.github.javafaker.service.RandomService;
+import pojos.Orders;
+import pojos.ProductsInventory;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -73,6 +76,41 @@ public class Utils {
                                                                         .build();
         System.out.println(customerAddresses);
         return customerAddresses;
+    }
+
+    public static ProductsInventory createProductWithFakeData() {
+        Faker faker = new Faker();
+        FakeValuesService fakeValuesService = new FakeValuesService(
+                new Locale("en-GB"), new RandomService());
+        ProductsInventory productsInventory = ProductsInventory.builder()
+                .id(25)
+                .product_name("prod20")
+                .quantity(faker.random().nextInt(2))
+                .product_type("car")
+                .price_without_vat(50)
+                .price_with_vat(60)
+                .is_product_in_stock(faker.random().nextBoolean())
+                .warehouse(faker.address().city())
+                .supplier_id(faker.random().nextInt(3))
+                .build();
+        System.out.println(productsInventory);
+        return productsInventory;
+    }
+
+    public static Orders createOrderWithFakeData() {
+        Faker faker = new Faker();
+        FakeValuesService fakeValuesService = new FakeValuesService(
+                new Locale("en-GB"), new RandomService());
+        Orders order = Orders.builder()
+                .id(25)
+                .customer_id(2)
+                .is_order_completed(faker.random().nextBoolean())
+                .is_order_payed(faker.random().nextBoolean())
+                .date_of_order(Timestamp.valueOf(LocalDateTime.now()))
+                .date_order_completed(Timestamp.valueOf(LocalDateTime.now()))
+                .build();
+        System.out.println(order);
+        return order;
     }
 
 }

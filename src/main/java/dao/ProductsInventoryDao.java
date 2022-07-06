@@ -25,7 +25,7 @@ public class ProductsInventoryDao implements DAO<ProductsInventory> {
     @Override
     public void save(ProductsInventory productInventory) {
         try {
-            preparedStatement = connection.prepareStatement("INSERT INTO products_inventory  (product_name, quantity, product_type, price_without_vat, price_with_vat,  is_product_in_stock, warehouse, supplier_id,)  VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO products_inventory  (product_name, quantity, product_type, price_without_vat, price_with_vat,  is_product_in_stock, warehouse, supplier_id)  VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, productInventory.getProduct_name());
             preparedStatement.setInt(2, productInventory.getQuantity());
             preparedStatement.setString(3, productInventory.getProduct_type());

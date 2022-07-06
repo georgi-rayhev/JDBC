@@ -5,13 +5,18 @@ import helpers.ResultSetMapper;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
+import org.apache.commons.dbutils.handlers.BeanMapHandler;
+import org.apache.commons.dbutils.handlers.MapListHandler;
+import pojos.CustomerAddresses;
 import pojos.Customers;
 
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -45,9 +50,9 @@ public class CustomerDao implements DAO<Customers> {
             preparedStatement.setTimestamp(8, customer.getProfile_deactivated());
             preparedStatement.setString(9, customer.getReason_for_deactivation());
             preparedStatement.setString(10, customer.getNotes());
-            preparedStatement.setInt(11,customer.getAddress_id());
+            preparedStatement.setInt(11, customer.getAddress_id());
             preparedStatement.executeUpdate();
-           System.out.println("Customer is saved successfully");
+            System.out.println("Customer is saved successfully");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -59,7 +64,7 @@ public class CustomerDao implements DAO<Customers> {
             preparedStatement = connection.prepareStatement("Delete from CUSTOMERS WHERE id = ?");
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            System.out.printf("Customer with id %d is deleted.%n");
+            System.out.printf("Customer  is deleted");
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -126,90 +131,89 @@ public class CustomerDao implements DAO<Customers> {
     }
 
 
-
     @Override
     public int getRecordsCount() {
         int idRecords = 0;
         try {
             preparedStatement = connection.prepareStatement("Select COUNT (id) from Customers ");
             resultSet = preparedStatement.executeQuery();
-                while (resultSet.next()) {
-                    idRecords = resultSet.getInt(1);
-                    System.out.printf("Customers Id's count is : %d%n", idRecords);
-                }
+            while (resultSet.next()) {
+                idRecords = resultSet.getInt(1);
+                System.out.printf("Customers Id's count is : %d%n", idRecords);
+            }
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
-    return idRecords;
-}
+        return idRecords;
+    }
 
     @Override
     public Customers getById(int id) {
         Customers customer = null;
-            try {
-                preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
-                preparedStatement.setInt(1,id);
-                resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()) {
-                        customer = Customers.builder()
-                            .id(resultSet.getInt("id"))
-                            .profile_name(resultSet.getString("profile_name"))
-                            .email(resultSet.getString("email"))
-                            .phone(resultSet.getString("phone"))
-                            .age(resultSet.getInt("age"))
-                            .Gdpr_consent(resultSet.getBoolean("gdpr_consent"))
-                            .Is_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"))
-                            .Profile_created_at(resultSet.getTimestamp("Profile_created_at"))
-                            .Profile_deactivated(resultSet.getTimestamp("Profile_deactivated"))
-                            .reason_for_deactivation(resultSet.getString("reason_for_deactivation"))
-                            .notes(resultSet.getString("notes"))
-                            .address_id(resultSet.getInt("address_id"))
-                            .build();
-                        }
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-                    System.out.println(customer);
-                    return customer;
+        try {
+            preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                customer = Customers.builder()
+                        .id(resultSet.getInt("id"))
+                        .profile_name(resultSet.getString("profile_name"))
+                        .email(resultSet.getString("email"))
+                        .phone(resultSet.getString("phone"))
+                        .age(resultSet.getInt("age"))
+                        .Gdpr_consent(resultSet.getBoolean("gdpr_consent"))
+                        .Is_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"))
+                        .Profile_created_at(resultSet.getTimestamp("Profile_created_at"))
+                        .Profile_deactivated(resultSet.getTimestamp("Profile_deactivated"))
+                        .reason_for_deactivation(resultSet.getString("reason_for_deactivation"))
+                        .notes(resultSet.getString("notes"))
+                        .address_id(resultSet.getInt("address_id"))
+                        .build();
             }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        System.out.println(customer);
+        return customer;
+    }
 
     @Override
     public List<Customers> getByIds(List<Integer> ids) {
         List<Customers> customers = new ArrayList<>();
-            try {
-                preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
-                for(int i = 0; i < ids.size(); i++) {
-                    preparedStatement.setInt(1, ids.get(i));
-                    resultSet = preparedStatement.executeQuery();
-                    while (resultSet.next()) {
-                        Customers customer = new Customers();
-                        customer.setId(resultSet.getInt("id"));
-                        customer.setProfile_name(resultSet.getString("Profile_name"));
-                        customer.setEmail(resultSet.getString("email"));
-                        customer.setPhone(resultSet.getString("phone"));
-                        customer.setAge(resultSet.getInt("age"));
-                        customer.setGdpr_consent(resultSet.getBoolean("gdpr_consent"));
-                        customer.setIs_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"));
-                        customer.setProfile_created_at(resultSet.getTimestamp("Profile_created_at"));
-                        customer.setProfile_deactivated(resultSet.getTimestamp("Profile_deactivated"));
-                        customer.setReason_for_deactivation(resultSet.getString("reason_for_deactivation"));
-                        customer.setNotes(resultSet.getString("notes"));
-                        customer.setAddress_id(resultSet.getInt("address_id"));
-                        customers.add(customer);
-                    }
+        try {
+            preparedStatement = connection.prepareStatement("Select * from Customers Where id = ?");
+            for (int i = 0; i < ids.size(); i++) {
+                preparedStatement.setInt(1, ids.get(i));
+                resultSet = preparedStatement.executeQuery();
+                while (resultSet.next()) {
+                    Customers customer = new Customers();
+                    customer.setId(resultSet.getInt("id"));
+                    customer.setProfile_name(resultSet.getString("Profile_name"));
+                    customer.setEmail(resultSet.getString("email"));
+                    customer.setPhone(resultSet.getString("phone"));
+                    customer.setAge(resultSet.getInt("age"));
+                    customer.setGdpr_consent(resultSet.getBoolean("gdpr_consent"));
+                    customer.setIs_customer_profile_active(resultSet.getBoolean("is_customer_profile_active"));
+                    customer.setProfile_created_at(resultSet.getTimestamp("Profile_created_at"));
+                    customer.setProfile_deactivated(resultSet.getTimestamp("Profile_deactivated"));
+                    customer.setReason_for_deactivation(resultSet.getString("reason_for_deactivation"));
+                    customer.setNotes(resultSet.getString("notes"));
+                    customer.setAddress_id(resultSet.getInt("address_id"));
+                    customers.add(customer);
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
             }
-            System.out.println(customers);
-            return customers;
-}
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        System.out.println(customers);
+        return customers;
+    }
 
-    public List <Customers> getByIdWithResultSetMapper(int id) {
+    public List<Customers> getByIdWithResultSetMapper(int id) {
         ResultSetMapper resultSetMapper = new ResultSetMapper();
         try {
             preparedStatement = connection.prepareStatement("SELECT * FROM customers WHERE id = ?");
-            preparedStatement.setInt( 1, id);
+            preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -236,13 +240,13 @@ public class CustomerDao implements DAO<Customers> {
         }
         List<Customers> searchedCustomers = resultSetMapper.mapResultSetToObject(resultSet, Customers.class);
         System.out.println("Searched customers are:");
-        for(Customers customer : searchedCustomers) {
+        for (Customers customer : searchedCustomers) {
             System.out.println(customer);
         }
         return searchedCustomers;
     }
 
-    public List <Customers> getByIdWithApacheDbUtils(int id) {
+    public List<Customers> getByIdWithApacheDbUtils(int id) {
         List<Customers> customersList = new ArrayList<>();
         try {
             ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
@@ -255,22 +259,54 @@ public class CustomerDao implements DAO<Customers> {
         return customersList;
     }
 
-    public List <Customers> getByIdsWithApacheDbUtils (List<Integer> ids) {
+    public List<Customers> getByIdsWithApacheDbUtils(List<Integer> ids) {
         List<Customers> customersList = new ArrayList<>();
         try {
             ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
             QueryRunner runner = new QueryRunner();
             Array idsArray = connection.createArrayOf("int", ids.toArray());
-            customersList = runner.query(databaseConnection.getConnection(), "Select * from Customers Where id = any(?)",idsArray,resultSetHandler);
+            customersList = runner.query(databaseConnection.getConnection(), "Select * from Customers Where id = any(?)", idsArray, resultSetHandler);
             System.out.println("Searched customers are:");
-            for(Customers customer : customersList) {
+            for (Customers customer : customersList) {
                 System.out.println(customer);
             }
-    } catch (Exception exception) {
-        exception.printStackTrace();
-    }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
         return customersList;
-}
+    }
+
+    public HashMap<Customers, CustomerAddresses> getCustomerAddresses() {
+        HashMap<Customers, CustomerAddresses> customersAddress = new HashMap<>();
+        try {
+            preparedStatement = connection.prepareStatement("SELECT id,profile_name, email, phone, age, public.customers.address_id,address, city, province, state, postal_code, country FROM public.customers INNER JOIN public.customer_addresses ON public.customers.id = public.customer_addresses.address_id");
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Customers customer = Customers.builder()
+                        .id(resultSet.getInt("id"))
+                        .profile_name(resultSet.getString("profile_name"))
+                        .email(resultSet.getString("email"))
+                        .age(resultSet.getInt("age"))
+                        .phone(resultSet.getString("phone"))
+                        .build();
+
+                CustomerAddresses customerAddress = CustomerAddresses.builder()
+                        .address_id(resultSet.getInt("address_id"))
+                        .country(resultSet.getString("country"))
+                        .city(resultSet.getString("city"))
+                        .province(resultSet.getString("province"))
+                        .state(resultSet.getString("state"))
+                        .address(resultSet.getString("address"))
+                        .postal_code(resultSet.getInt("postal_code"))
+                        .build();
+                customersAddress.put(customer, customerAddress);
+                System.out.println(customerAddress);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return customersAddress;
+    }
 }
 
 

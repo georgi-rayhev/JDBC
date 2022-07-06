@@ -1,7 +1,7 @@
 package jdbcTests;
 
 import dao.CustomerAddressesDao;
-
+import dao.ProductsInventoryDao;
 import dbConnection.DatabaseConnection;
 import helpers.Utils;
 import org.junit.jupiter.api.AfterEach;
@@ -9,30 +9,28 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pojos.CustomerAddresses;
-
+import pojos.ProductsInventory;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomerAddressTests {
+public class ProductsInventoryTests {
 
-
-    DatabaseConnection databaseConnection = null;
     private static Connection connection;
     Statement statement = null;
     PreparedStatement preparedStatement = null;
     ResultSet resultSet = null;
     List<String> names = new ArrayList<>();
 
-    private int address_id = 1;
-    private String query = "SELECT * FROM customer_addresses where address_id = '%s'";
+    private int id = 1;
+    private String query = "SELECT * FROM products_inventory where id = '%s'";
 
 
-    CustomerAddressesDao customerAddressesDao = new CustomerAddressesDao();
+    ProductsInventoryDao productsInventoryDao = new ProductsInventoryDao();
 
-    public CustomerAddressTests() throws SQLException, IOException {
+    public ProductsInventoryTests() throws SQLException, IOException {
     }
 
 
@@ -41,9 +39,9 @@ public class CustomerAddressTests {
         try  {
             connection = DatabaseConnection.getInstance().getConnection();
             statement = connection.createStatement();
-            resultSet = statement.executeQuery(String.format(query, address_id));
+            resultSet = statement.executeQuery(String.format(query, id));
             while (resultSet.next()){
-                names.add(resultSet.getString("address_id"));
+                names.add(resultSet.getString("id"));
             }
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -60,17 +58,17 @@ public class CustomerAddressTests {
     }
 
     @Test
-    public void CustomerAddressSaveTests(){
+    public void ProductInventorySaveTests(){
         int idRecords = 0;
-        customerAddressesDao.save(Utils.createCustomerAddressWithFakeData());
+        productsInventoryDao.save(Utils.createProductWithFakeData());
         try {
-            preparedStatement = connection.prepareStatement("Select COUNT (address_id) from customer_addresses");
+            preparedStatement = connection.prepareStatement("Select COUNT (id) from products_inventory ");
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 idRecords = resultSet.getInt(1);
-                System.out.printf("customer_address Id's count is : %d%n", idRecords);
+                System.out.printf("Products Id's count is : %d%n", idRecords);
             }
-            Assertions.assertEquals(idRecords,21);
+            Assertions.assertEquals(idRecords,18);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
@@ -79,15 +77,15 @@ public class CustomerAddressTests {
     @Test
     public void testDeleteById() {
         int idRecords = 0;
-        customerAddressesDao.deleteById(27);
+        productsInventoryDao.deleteById(19);
         try {
-            preparedStatement = connection.prepareStatement("Select COUNT (address_id) from customer_addresses");
+            preparedStatement = connection.prepareStatement("Select COUNT (id) from products_inventory ");
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 idRecords = resultSet.getInt(1);
-                System.out.printf("customer_address Id's count is : %d%n", idRecords);
+                System.out.printf("Products Id's count is : ", idRecords);
             }
-            Assertions.assertEquals(idRecords,20);
+            Assertions.assertEquals(idRecords,17);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
@@ -95,10 +93,10 @@ public class CustomerAddressTests {
 
     @Test
     public void testDeleteAll() {
-        customerAddressesDao.deleteAll();
+        productsInventoryDao.deleteAll();
         try {
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("Select * from customer_addresses");
+            resultSet = statement.executeQuery("Select * from products_inventory");
             Assertions.assertNull(resultSet);
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -107,22 +105,22 @@ public class CustomerAddressTests {
 
     @Test
     public void testGetRandomId() {
-        Assertions.assertNotNull(customerAddressesDao.getRandomId());
+        Assertions.assertNotNull(productsInventoryDao.getRandomId());
     }
 
     @Test
     public void createListWithRandomIds () {
-        Assertions.assertNotNull(customerAddressesDao.getRandomIds(8));
+        Assertions.assertNotNull(productsInventoryDao.getRandomIds(8));
     }
 
     @Test
     public void getCountOfCustomerIds() {
-        Assertions.assertNotNull(customerAddressesDao.getRecordsCount());
+        Assertions.assertNotNull(productsInventoryDao.getRecordsCount());
     }
 
     @Test
     public void getByIdTest() {
-        Assertions.assertNotNull(customerAddressesDao.getById(2));
+        Assertions.assertNotNull(productsInventoryDao.getById(2));
     }
 
     @Test
@@ -130,11 +128,10 @@ public class CustomerAddressTests {
         List<Integer> ids = new ArrayList<>();
         ids.add(4);
         ids.add(5);
-        List <CustomerAddresses> customerAddresses  = customerAddressesDao.getByIds(ids);
-        for (CustomerAddresses addresses : customerAddresses) {
-            Assertions.assertEquals(customerAddresses.size(),ids.size());
-            Assertions.assertNotNull(customerAddresses.get(0).getAddress());
-            Assertions.assertNotNull(customerAddresses.get(1).getAddress());
+        List <ProductsInventory> productsInventories  = productsInventoryDao.getByIds(ids);
+        for (ProductsInventory products : productsInventories) {
+            Assertions.assertEquals(productsInventories.size(),ids.size());
+            Assertions.assertNotNull(productsInventories.get(0).getProduct_name());
         }
     }
 }

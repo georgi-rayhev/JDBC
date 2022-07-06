@@ -16,11 +16,15 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class JdbcTests {
 
      DatabaseConnection databaseConnection = null;
      private static Connection connection;
      Statement statement = null;
+     PreparedStatement preparedStatement = null;
      ResultSet resultSet = null;
      List<String> names = new ArrayList<>();
      List<String> fakerNames = new ArrayList<>();
@@ -69,15 +73,8 @@ public class JdbcTests {
      }
 
      @Test
-     public void createCustomerWithFakeData() throws Exception {
-          Utils.createCustomerWithFakeData();
-          try {
-               statement = connection.createStatement();
-               resultSet = statement.executeQuery(String.format(searchingFakeUserQuery));
-               Assertions.assertNotNull(resultSet);
-          } catch (Exception exception) {
-               System.out.println(exception.getMessage());
-          }
+     public void createCustomerWithFakeData() {
+        Assertions.assertNotNull(Utils.createCustomerWithFakeData());
      }
 
      @Test
@@ -87,11 +84,16 @@ public class JdbcTests {
 
      @Test
      public void testSaveCrudOperation(){
+          int idRecords = 0;
           customerDao.save(Utils.createCustomerWithFakeData());
           try {
-               statement = connection.createStatement();
-               resultSet = statement.executeQuery("Select * from Customers where id = 30");
-               Assertions.assertNotNull(resultSet);
+               preparedStatement = connection.prepareStatement("Select COUNT (id) from Customers ");
+               resultSet = preparedStatement.executeQuery();
+               while (resultSet.next()) {
+                    idRecords = resultSet.getInt(1);
+                    System.out.printf("Customers Id's count is : %d%n", idRecords);
+               }
+               Assertions.assertEquals(idRecords,16);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
@@ -99,11 +101,16 @@ public class JdbcTests {
 
      @Test
      public void testDeleteById() {
-          customerDao.deleteById(35);
+          int idRecords = 0;
+          customerDao.deleteById(39);
           try {
-               statement = connection.createStatement();
-               resultSet = statement.executeQuery("Select * from Customers where id = 35");
-               Assertions.assertNull(resultSet);
+               preparedStatement = connection.prepareStatement("Select COUNT (id) from Customers ");
+               resultSet = preparedStatement.executeQuery();
+               while (resultSet.next()) {
+                    idRecords = resultSet.getInt(1);
+                    System.out.printf("Customers Id's count is : %d%n", idRecords);
+                    Assertions.assertEquals(idRecords,15);
+               }
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
@@ -157,7 +164,7 @@ public class JdbcTests {
 
      @Test
      public void testResultMapperWithId() {
-          Assert.assertNotNull(customerDao.getByIdWithResultSetMapper(2).get(0).getProfile_name());
+          Assertions.assertNotNull(customerDao.getByIdWithResultSetMapper(2).get(0).getProfile_name());
      }
 
      @Test
@@ -165,7 +172,7 @@ public class JdbcTests {
           List<Integer> ids = new ArrayList<>();
           ids.add(4);
           ids.add(5);
-          List<Customers> customers = customerDao.getByIds(ids);
+          List<Customers> customers = customerDao.getByIdsWithResultSetMapper(ids);
           for (Customers customer : customers) {
                Assertions.assertEquals(customers.size(), ids.size());
                Assertions.assertNotNull(customers.get(0).getProfile_name());
@@ -175,7 +182,7 @@ public class JdbcTests {
 
      @Test
      public void testDbUtilsGetById() {
-          Assert.assertNotNull(customerDao.getByIdWithApacheDbUtils(2).get(0).getProfile_name());
+          Assertions.assertNotNull(customerDao.getByIdWithApacheDbUtils(2).get(0).getProfile_name());
 }
 
      @Test
@@ -189,6 +196,11 @@ public class JdbcTests {
                     Assertions.assertNotNull(customers.get(0).getProfile_name());
                     Assertions.assertNotNull(customers.get(1).getProfile_name());
           }
+}
+
+@Test
+     public void testss(){
+          customerDao.getCustomerAddresses();
 }
      }
 
