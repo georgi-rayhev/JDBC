@@ -106,6 +106,20 @@ public class CustomerDao implements DAO<Customers> {
         return randomCustomer;
     }
 
+    public int getId() {
+        int idRecord = 0;
+        try {
+            preparedStatement = connection.prepareStatement("SELECT id FROM CUSTOMERS ORDER BY RANDOM() LIMIT 1");
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                idRecord = resultSet.getInt(1);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return idRecord;
+    }
+
 
     @Override
     public List<Integer> getRandomIds(int randomCount) {

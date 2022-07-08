@@ -70,12 +70,44 @@ public class CustomerDbStepDefinitions {
 
     @When("Create {int} new records in Customers and Customer_addresses tables")
     public void createNewRecordsInTables(int recordsNumber) {
-
+        faker = new Faker();
+        try {
             for (int i = 0; i < recordsNumber; i++) {
+                CustomerAddresses customerAddresses = CustomerAddresses.builder()
+                        .address(faker.address().streetAddress())
+                        .city(faker.address().city())
+                        .province(faker.bothify("no province"))
+                        .state(faker.address().state())
+                        .postal_code(faker.random().nextInt(1000))
+                        .country(faker.address().country())
+                        .build();
+                customerAddressesDao.save(customerAddresses);
+                int addressId = customerAddressesDao.getAddressId();
 
-                customerAddressesDao.save(Utils.createCustomerAddressWithFakeData());
-                customerDao.save(Utils.createCustomerWithFakeData());
+                Customers customer = Customers.builder()
+                        .profile_name(faker.name().firstName())
+                        .email(faker.bothify("????##@gmail.com"))
+                        .phone(faker.numerify("##########"))
+                        .age(faker.random().nextInt(18, 99))
+                        .Gdpr_consent(faker.random().nextBoolean())
+                        .Is_customer_profile_active(faker.random().nextBoolean())
+                        .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
+                        .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
+                        .reason_for_deactivation("No reason")
+                        .notes("Some text")
+                        .address_id(addressId)
+                        .build();
+
+                customerDao.save(customer);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+  //          for (int i = 0; i < recordsNumber; i++) {
+//                customerAddressesDao.save(Utils.createCustomerAddressWithFakeData());
+//                customerDao.save(Utils.createCustomerWithFakeData());
+  //          }
         }
 
     @Then("Verify tables row count is {int}")
@@ -86,18 +118,38 @@ public class CustomerDbStepDefinitions {
 
     @When("Create new Customer and save it")
     public void createNewCustomerAndSaveIt() {
-        customerDao.save(Utils.createCustomerWithFakeData());
+        try {
+            int addressId = customerAddressesDao.getAddressId();
+            Customers customer = Customers.builder()
+                    .profile_name(faker.name().firstName())
+                    .email(faker.bothify("????##@gmail.com"))
+                    .phone(faker.numerify("##########"))
+                    .age(faker.random().nextInt(18, 99))
+                    .Gdpr_consent(faker.random().nextBoolean())
+                    .Is_customer_profile_active(faker.random().nextBoolean())
+                    .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
+                    .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
+                    .reason_for_deactivation("No reason")
+                    .notes("Some text")
+                    .address_id(addressId)
+                    .build();
+
+            customerDao.save(customer);
+        } catch (Exception e) {
+        e.printStackTrace();
     }
+        }
+
 
     @Then("Verify customer count is {int}")
     public void verifyCustomerIsSaved(int count) {
-
         Assertions.assertEquals(customerDao.getRecordsCount(), count);
     }
 
     @When("Delete Customer")
     public void deleteCustomer() {
-     //   customerDao.deleteById();
+        int id = customerDao.getId();
+        customerDao.deleteById(id);
     }
 
     @Then("Verify that customer count is {int}")
@@ -136,7 +188,8 @@ public class CustomerDbStepDefinitions {
     @Then("Verify that all mandatory fields are with data")
     public void verify_that_all_mandatory_fields_are_with_data() {
         for (CustomerAddresses customerAddresses : customerAddressesList) {
-            Assertions.assertTrue(!customerAddresses.getCity().isEmpty() && customerAddresses.getCountry().isEmpty());
+            Assertions.assertTrue(!customerAddresses.getCity().isEmpty() && customerAddresses.getCity().isBlank());
+            Assertions.assertTrue(!customerAddresses.getCountry().isEmpty() && customerAddresses.getCountry().isBlank());
             Assertions.assertNotNull(customerAddresses.getPostal_code());
         }
     }
