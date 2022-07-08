@@ -170,5 +170,20 @@ public class CustomerAddressesDao implements DAO<CustomerAddresses> {
         }
         return searchedCustomerAddresses;
     }
+
+    public int getAddressId() {
+        int addressId = 0;
+
+        try {
+            preparedStatement = connection.prepareStatement("Select address_id from customer_addresses order by random () limit 1");
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                addressId = resultSet.getInt(1);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return addressId;
+    }
 }
 

@@ -1,5 +1,6 @@
 package helpers;
 
+import dao.CustomerAddressesDao;
 import pojos.CustomerAddresses;
 import pojos.Customers;
 import com.github.javafaker.Faker;
@@ -8,7 +9,8 @@ import com.github.javafaker.service.RandomService;
 import pojos.Orders;
 import pojos.ProductsInventory;
 
-import java.sql.Timestamp;
+import java.io.IOException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,22 +19,22 @@ import java.util.Locale;
 
 public class Utils {
     public static Customers createCustomerWithFakeData() {
-        Faker faker = new Faker();
-        FakeValuesService fakeValuesService = new FakeValuesService(
-                new Locale("en-GB"), new RandomService());
-        Customers customer = Customers.builder()
-                .id(faker.number().numberBetween(30,30))
-                .profile_name(faker.name().firstName())
-                .email(faker.bothify("????##@gmail.com"))
-                .phone(faker.numerify("##########"))
-                .age(faker.random().nextInt(18,99))
-                .Gdpr_consent(faker.random().nextBoolean())
-                .Is_customer_profile_active(faker.random().nextBoolean())
-                .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
-                .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
-                .reason_for_deactivation("No reason")
-                .notes("Some text")
-                .build();
+            Faker faker = new Faker();
+            FakeValuesService fakeValuesService = new FakeValuesService(
+                    new Locale("en-GB"), new RandomService());
+            Customers customer = Customers.builder()
+                    .profile_name(faker.name().firstName())
+                    .email(faker.bothify("????##@gmail.com"))
+                    .phone(faker.numerify("##########"))
+                    .age(faker.random().nextInt(18, 99))
+                    .Gdpr_consent(faker.random().nextBoolean())
+                    .Is_customer_profile_active(faker.random().nextBoolean())
+                    .Profile_created_at(Timestamp.valueOf(LocalDateTime.now()))
+                    .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
+                    .reason_for_deactivation("No reason")
+                    .notes("Some text")
+                    .address_id(1)
+                    .build();
         System.out.println(customer);
         return customer;
     }
@@ -55,6 +57,7 @@ public class Utils {
                     .Profile_deactivated(Timestamp.valueOf(LocalDateTime.now()))
                     .reason_for_deactivation("No reason")
                     .notes("Some text")
+                    .address_id(1)
                     .build());
         }
         System.out.println(customers);
@@ -66,7 +69,6 @@ public class Utils {
         FakeValuesService fakeValuesService = new FakeValuesService(
                 new Locale("en-GB"), new RandomService());
         CustomerAddresses customerAddresses = CustomerAddresses.builder()
-                .address_id(faker.number().numberBetween(30,30))
                         .address(faker.address().streetAddress())
                                 .city(faker.address().city())
                                         .province(faker.bothify("no province"))

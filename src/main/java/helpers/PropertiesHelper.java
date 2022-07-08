@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class PropertiesHelper {
 
-    private static String configPath = "src/main/resources/config.properties";
+    private static String configPath = "src/test/resources/config.properties";
     private String url;
     private String user;
     private String password;
