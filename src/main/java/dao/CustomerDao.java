@@ -6,13 +6,11 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import pojos.Customers;
-
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 
 /**
  * In this class will be stored methods for CRUD operations with Db
@@ -217,6 +215,11 @@ public class CustomerDao implements DAO<Customers> {
         return customers;
     }
 
+    /**
+     * This method return a Customer by id using ResultSetMapper
+     * @param id
+     * @return
+     */
     public List<Customers> getByIdWithResultSetMapper(int id) {
         ResultSetMapper resultSetMapper = new ResultSetMapper();
         try {
@@ -232,6 +235,11 @@ public class CustomerDao implements DAO<Customers> {
         return searchedCustomers;
     }
 
+    /**
+     * This method return a list of customers by id's using ResultSetMapper
+     * @param ids
+     * @return
+     */
     public List<Customers> getByIdsWithResultSetMapper(List<Integer> ids) {
         ResultSetMapper resultSetMapper = new ResultSetMapper();
         try {
@@ -254,6 +262,11 @@ public class CustomerDao implements DAO<Customers> {
         return searchedCustomers;
     }
 
+    /**
+     * This method return a Customer by id using ApacheDbUtils
+     * @param id
+     * @return
+     */
     public List<Customers> getByIdWithApacheDbUtils(int id) {
         List<Customers> customersList = new ArrayList<>();
         try {
@@ -267,6 +280,11 @@ public class CustomerDao implements DAO<Customers> {
         return customersList;
     }
 
+    /**
+     * This method return a list of Customers by id's using ApacheDbUtils
+     * @param ids
+     * @return
+     */
     public List<Customers> getByIdsWithApacheDbUtils(List<Integer> ids) {
         List<Customers> customersList = new ArrayList<>();
         try {
@@ -284,57 +302,22 @@ public class CustomerDao implements DAO<Customers> {
         return customersList;
     }
 
+    /**
+     * This method return customer address using ApacheDbUtils
+     * @param id
+     * @return
+     */
     public List<Customers> getCustomerAddressByIdWithDbUtils(int id) {
         List<Customers> customerAddressList = new ArrayList<>();
         try {
             ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
             QueryRunner runner = new QueryRunner();
-            customerAddressList = runner.query(databaseConnection.getConnection(), String.format("Select profile_name,id , array_agg(address ||' '||city || ' ' || province || ' ' || postal_code || ' ' || country) customerAddress From public.customers inner join public.customer_addresses on public.customers.address_id  = public.customer_addresses.address_id Where id = %s group by id", id), resultSetHandler);
+            customerAddressList = runner.query(databaseConnection.getConnection(), String.format("Select profile_name,id , email , phone , age , array_agg(public.customer_addresses.address_id || ' ' || address ||' '||city || ' ' || province || ' ' || postal_code || ' ' || country) customerAddress From public.customers inner join public.customer_addresses on public.customers.address_id  = public.customer_addresses.address_id Where id = %s group by id", id), resultSetHandler);
             System.out.println(customerAddressList);
         } catch (Exception exception) {
             exception.printStackTrace();
         }
         return customerAddressList;
-    }
-
-    public List<Customers> getCustomerOrdersByIdWithDbUtils(int id) {
-        List<Customers> customerOrders = new ArrayList<>();
-        try {
-            ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
-            QueryRunner runner = new QueryRunner();
-            customerOrders = runner.query(databaseConnection.getConnection(), String.format("Select profile_name ,customer_id, array_agg(public.orders.id || ' ' || is_order_completed || ' ' ||date_of_order || ' '|| product_name || ' ' || product_type) customerOrders from products_inventory inner join orders_product_quantities on products_inventory.id = orders_product_quantities.product_id inner join orders on orders_product_quantities.orders_id = orders.id inner join customers on orders.customer_id = customers.id Where customer_id = %s Group By customer_id , profile_name;", id), resultSetHandler);
-            System.out.println(customerOrders);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return customerOrders;
-    }
-
-    public List<Customers> getAllFieldsAtOnce(int id) {
-        List<Customers> customerOrders = new ArrayList<>();
-        try {
-            ResultSetHandler<List<Customers>> resultSetHandler = new BeanListHandler<Customers>(Customers.class);
-            QueryRunner runner = new QueryRunner();
-            customerOrders = runner.query(databaseConnection.getConnection(), String.format("select profile_name,id , array_agg(address ||' '||city || ' ' || province || ' ' || postal_code || ' ' || country) customerAddress\n" +
-                    "from public.customers  \n" +
-                    "inner join public.customer_addresses \n" +
-                    "on public.customers.address_id  = public.customer_addresses.address_id\n" +
-                    "where id = 4\n" +
-                    "group by id\n" +
-                    "union \n" +
-                    "Select profile_name ,customer_id, array_agg(public.orders.id || ' ' || is_order_completed || ' ' ||date_of_order || ' '|| product_name || ' ' || product_type) customerOrders \n" +
-                    "from products_inventory \n" +
-                    "inner join orders_product_quantities \n" +
-                    "on products_inventory.id = orders_product_quantities.product_id \n" +
-                    "inner join orders on orders_product_quantities.orders_id = orders.id\n" +
-                    "inner join customers on orders.customer_id = customers.id \n" +
-                    "Where customer_id = 4 \n" +
-                    "Group By customer_id , profile_name;", id), resultSetHandler);
-            System.out.println(customerOrders);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        return customerOrders;
     }
 }
 

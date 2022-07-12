@@ -2,6 +2,7 @@ package jdbcTests;
 
 import dao.CustomerAddressesDao;
 import dao.CustomerDao;
+import dao.OrdersDao;
 import dbConnection.DatabaseConnection;
 import helpers.Utils;
 import org.junit.jupiter.api.AfterEach;
@@ -9,15 +10,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pojos.Customers;
-
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 public class JdbcTests {
 
      DatabaseConnection databaseConnection = null;
@@ -34,23 +30,24 @@ public class JdbcTests {
 
      CustomerDao customerDao = new CustomerDao();
      CustomerAddressesDao customerAddressesDao = new CustomerAddressesDao();
+     OrdersDao ordersDao = new OrdersDao();
 
      public JdbcTests() throws SQLException, IOException {
      }
 
      @BeforeEach
-     public void setUp(){
-          try  {
+     public void setUp() {
+          try {
                connection = DatabaseConnection.getInstance().getConnection();
                statement = connection.createStatement();
                resultSet = statement.executeQuery(String.format(query, searchedName));
-               while (resultSet.next()){
+               while (resultSet.next()) {
                     names.add(resultSet.getString("profile_name"));
                }
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
-          }
+     }
 
      @AfterEach
      public void closeConnection() {
@@ -66,14 +63,14 @@ public class JdbcTests {
      @Test
      public void checkForCurrentName() {
           for (String name : names) {
-               Assertions.assertEquals(name , searchedName);
+               Assertions.assertEquals(name, searchedName);
           }
           System.out.println(names);
      }
 
      @Test
      public void createCustomerWithFakeData() {
-        Assertions.assertNotNull(Utils.createCustomerWithFakeData());
+          Assertions.assertNotNull(Utils.createCustomerWithFakeData());
      }
 
      @Test
@@ -82,7 +79,7 @@ public class JdbcTests {
      }
 
      @Test
-     public void testSaveCrudOperation(){
+     public void testSaveCrudOperation() {
           int idRecords = 0;
           customerDao.save(Utils.createCustomerWithFakeData());
           try {
@@ -92,7 +89,7 @@ public class JdbcTests {
                     idRecords = resultSet.getInt(1);
                     System.out.printf("Customers Id's count is : %d%n", idRecords);
                }
-               Assertions.assertEquals(idRecords,16);
+               Assertions.assertEquals(idRecords, 16);
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
           }
@@ -108,7 +105,7 @@ public class JdbcTests {
                while (resultSet.next()) {
                     idRecords = resultSet.getInt(1);
                     System.out.printf("Customers Id's count is : %d%n", idRecords);
-                    Assertions.assertEquals(idRecords,15);
+                    Assertions.assertEquals(idRecords, 15);
                }
           } catch (Exception exception) {
                System.out.println(exception.getMessage());
@@ -119,13 +116,13 @@ public class JdbcTests {
      @Test
      public void testDeleteAll() {
           customerDao.deleteAll();
-               try {
-                    statement = connection.createStatement();
-                    resultSet = statement.executeQuery("Select * from customers");
-                    Assertions.assertNull(resultSet);
-               } catch (Exception exception) {
-                    System.out.println(exception.getMessage());
-               }
+          try {
+               statement = connection.createStatement();
+               resultSet = statement.executeQuery("Select * from customers");
+               Assertions.assertNull(resultSet);
+          } catch (Exception exception) {
+               System.out.println(exception.getMessage());
+          }
      }
 
      @Test
@@ -134,7 +131,7 @@ public class JdbcTests {
      }
 
      @Test
-     public void createListWithRandomIds () {
+     public void createListWithRandomIds() {
           Assertions.assertNotNull(customerDao.getRandomIds(8));
      }
 
@@ -153,11 +150,11 @@ public class JdbcTests {
           List<Integer> ids = new ArrayList<>();
           ids.add(4);
           ids.add(5);
-               List <Customers> customers  = customerDao.getByIds(ids);
-                    for (Customers customer : customers) {
-                         Assertions.assertEquals(customers.size(),ids.size());
-                         Assertions.assertNotNull(customers.get(0).getProfile_name());
-                         Assertions.assertNotNull(customers.get(1).getProfile_name());
+          List<Customers> customers = customerDao.getByIds(ids);
+          for (Customers customer : customers) {
+               Assertions.assertEquals(customers.size(), ids.size());
+               Assertions.assertNotNull(customers.get(0).getProfile_name());
+               Assertions.assertNotNull(customers.get(1).getProfile_name());
           }
      }
 
@@ -182,7 +179,7 @@ public class JdbcTests {
      @Test
      public void testDbUtilsGetById() {
           Assertions.assertNotNull(customerDao.getByIdWithApacheDbUtils(2).get(0).getProfile_name());
-}
+     }
 
      @Test
      public void testDbUtilsGetByIds() {
@@ -190,26 +187,22 @@ public class JdbcTests {
           ids.add(4);
           ids.add(5);
           List<Customers> customers = customerDao.getByIdsWithApacheDbUtils(ids);
-               for (Customers customer : customers) {
-                    Assertions.assertEquals(customers.size(), ids.size());
-                    Assertions.assertNotNull(customers.get(0).getProfile_name());
-                    Assertions.assertNotNull(customers.get(1).getProfile_name());
+          for (Customers customer : customers) {
+               Assertions.assertEquals(customers.size(), ids.size());
+               Assertions.assertNotNull(customers.get(0).getProfile_name());
+               Assertions.assertNotNull(customers.get(1).getProfile_name());
           }
-}
+     }
 
      @Test
-     public void getCustomerAddressById(){
-          Assertions.assertNotNull(customerDao.getCustomerAddressByIdWithDbUtils(4));
-}
+     public void getCustomerAddressById() {
+          Assertions.assertNotNull(customerDao.getCustomerAddressByIdWithDbUtils(257));
+     }
 
      @Test
      public void getCustomerOrdersById() {
-          customerDao.getCustomerOrdersByIdWithDbUtils(6);
+          ordersDao.getCustomerOrdersByIdWithDbUtils(257);
      }
 
-     @Test
-     public void getAllFieldsAtOnce() {
-          customerDao.getAllFieldsAtOnce(6);
-     }
-     }
+}
 

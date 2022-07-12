@@ -16,6 +16,11 @@ import java.util.Locale;
 
 
 public class Utils {
+
+    /**
+     * This method create new Customer with fake data using JavaFaker
+     * @return
+     */
     public static Customers createCustomerWithFakeData() {
             Faker faker = new Faker();
             FakeValuesService fakeValuesService = new FakeValuesService(
@@ -36,6 +41,11 @@ public class Utils {
         System.out.println(customer);
         return customer;
     }
+
+    /**
+     * This method create a list of Customers with fake data using JavaFaker
+     * @return
+     */
     public static List<Customers> createListOfCustomers(){
         Faker faker = new Faker();
         FakeValuesService fakeValuesService = new FakeValuesService(
@@ -62,6 +72,10 @@ public class Utils {
           return customers;
     }
 
+    /**
+     * This method create customer address with fake data using JavaFaker
+     * @return
+     */
     public static CustomerAddresses createCustomerAddressWithFakeData() {
         Faker faker = new Faker();
         FakeValuesService fakeValuesService = new FakeValuesService(
@@ -78,6 +92,10 @@ public class Utils {
         return customerAddresses;
     }
 
+    /**
+     * This method create Product with fake data using JavaFaker
+     * @return
+     */
     public static ProductsInventory createProductWithFakeData() {
         Faker faker = new Faker();
         FakeValuesService fakeValuesService = new FakeValuesService(
@@ -96,6 +114,11 @@ public class Utils {
         System.out.println(productsInventory);
         return productsInventory;
     }
+
+    /**
+     * This method create order with fake data using JavaFaker
+     * @return
+     */
 
     public static Orders createOrderWithFakeData() {
         Faker faker = new Faker();

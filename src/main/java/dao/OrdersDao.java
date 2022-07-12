@@ -1,9 +1,10 @@
 package dao;
 
 import dbConnection.DatabaseConnection;
-import pojos.Customers;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.ResultSetHandler;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import pojos.Orders;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,12 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 public class OrdersDao implements DAO<Orders>{
 
     private Connection connection;
     private ResultSet resultSet;
     private PreparedStatement preparedStatement;
+    private DatabaseConnection databaseConnection = new DatabaseConnection();
 
 
 
@@ -173,5 +174,30 @@ public class OrdersDao implements DAO<Orders>{
         }
         System.out.println(orders);
         return orders;
+    }
+
+    /**
+     * This method return customer orders
+     * @param id
+     * @return
+     */
+    public List<Orders> getCustomerOrdersByIdWithDbUtils(int id) {
+        List<Orders> customerOrders = new ArrayList<>();
+        try {
+            ResultSetHandler<List<Orders>> resultSetHandler = new BeanListHandler<Orders>(Orders.class);
+            QueryRunner runner = new QueryRunner();
+            customerOrders = runner.query(databaseConnection.getConnection(), String.format("Select public.customers.profile_name ,customer_id, is_order_completed , date_of_order, array_agg(product_name || ' ' || product_type || ' ' ||date_of_order || ' '|| is_order_completed) orderedProducts \n" +
+                    "from products_inventory \n" +
+                    "inner join orders_product_quantities \n" +
+                    "on products_inventory.id = orders_product_quantities.product_id \n" +
+                    "inner join orders on orders_product_quantities.orders_id = orders.id\n" +
+                    "inner join customers on orders.customer_id = customers.id \n" +
+                    "Where customer_id = %s\n" +
+                    "Group By customer_id , profile_name, is_order_completed, date_of_order;", id), resultSetHandler);
+            System.out.println(customerOrders);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return customerOrders;
     }
 }

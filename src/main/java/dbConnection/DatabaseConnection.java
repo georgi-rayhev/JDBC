@@ -13,7 +13,10 @@ public class DatabaseConnection {
     private Connection connection = null;
     private PropertiesHelper propertiesHelper;
 
-
+    /**
+     * This method create a Database connection
+     * @return
+     */
     public Connection getConnection(){
         try {
             propertiesHelper = PropertiesHelper.getInstance();
@@ -27,6 +30,12 @@ public class DatabaseConnection {
         return connection;
     }
 
+    /**
+     * This method get an instance of database connection
+     * @return
+     * @throws SQLException
+     * @throws IOException
+     */
     public static DatabaseConnection getInstance() throws SQLException, IOException {
         if (instance == null) {
             instance = new DatabaseConnection();
